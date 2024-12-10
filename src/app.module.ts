@@ -8,6 +8,7 @@ import { OrdersModule } from './orders/orders.module';
 import { UsersModule } from './users/users.module';
 import { InstrumentsModule } from './instruments/instruments.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
+import { MarketdataModule } from './marketdata/marketdata.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     UsersModule,
     PortfolioModule,
     InstrumentsModule,
+    MarketdataModule,
   ],
   controllers: [AppController],
   providers: [AppService],

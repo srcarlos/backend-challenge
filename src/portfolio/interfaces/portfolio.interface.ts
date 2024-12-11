@@ -1,8 +1,7 @@
-import { IAsset } from "./asset.interface";
+import { IAsset } from './asset.interface';
 
 export interface IPortfolio {
-    totalAccountValue: number;
-    availableCash: number;
-    assets: IAsset[]; 
-  }
-  
+  total_account_value: number;
+  available_cash: number;
+  assets: IAsset[];
+}

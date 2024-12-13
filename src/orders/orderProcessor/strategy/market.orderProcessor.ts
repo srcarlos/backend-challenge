@@ -5,10 +5,14 @@ import { OrderProcessor } from '../orderProcessor.interface';
 import { MarketdataService } from 'src/marketdata/marketdata.service';
 import { OrderSide, OrderStatus } from 'src/orders/types/order.types';
 import { IOrder } from 'src/orders/order.interface';
+import { OrdersRepository } from 'src/orders/orders.repository';
 
 @Injectable()
 export class MarketOrderProcessor implements OrderProcessor {
-  constructor(private readonly marketDataService: MarketdataService) {}
+  constructor(
+    private readonly marketDataService: MarketdataService,
+    private readonly ordersRepository: OrdersRepository,
+  ) {}
   async validate(order: Order, user: User): Promise<boolean> {
     if (order.getPrice()) throw new BadRequestException('Market order does not need price');
 
@@ -41,8 +45,8 @@ export class MarketOrderProcessor implements OrderProcessor {
   async execute(order: Order, user: User): Promise<Order> {
     const latestPrice = await this.marketDataService.getLatestPrice(order.getInstrumentId());
     const portfolio = user.portfolio;
-    let position = portfolio.getAssetByInstrumentId(order.getInstrumentId()).quantity;
-    let availableCash = user.portfolio.availableCash;
+    let position = portfolio.getAssetByInstrumentId(order.getInstrumentId())?.quantity || 0;
+    let availableCash = user.portfolio.availableCash || 0;
 
     if (order.getSide() === OrderSide.BUY) {
       availableCash -= latestPrice * order.getSize();
@@ -51,10 +55,10 @@ export class MarketOrderProcessor implements OrderProcessor {
       position -= order.getSize();
       availableCash += latestPrice * order.getSize();
     }
+    order.setPrice(latestPrice);
     order.setStatus(OrderStatus.FILLED);
-    // update order position
-    //await this.ordersRepository.save(order); POSITION
-    //await this.ordersRepository.save(order); NEW ORDER
+
+    await this.ordersRepository.create(order.toOrderDto());
     return order;
   }
 }

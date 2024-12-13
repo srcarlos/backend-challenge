@@ -30,7 +30,11 @@ export class OrdersRepository {
   }
 
   async create(data: Partial<Orders>): Promise<Orders> {
-    return this.prismaService.orders.create({ data });
+    try {
+      return this.prismaService.orders.create({ data });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async update(id: number, data: Partial<Orders>): Promise<Orders> {

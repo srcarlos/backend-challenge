@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Order } from 'src/orders/order.entity';
 import { User } from 'src/users/user.entity';
 import { OrderProcessor } from '../orderProcessor.interface';
@@ -10,6 +10,8 @@ import { IOrder } from 'src/orders/order.interface';
 export class MarketOrderProcessor implements OrderProcessor {
   constructor(private readonly marketDataService: MarketdataService) {}
   async validate(order: Order, user: User): Promise<boolean> {
+    if (order.getPrice()) throw new BadRequestException('Market order does not need price');
+
     const latestPrice = await this.marketDataService.getLatestPrice(order.getInstrumentId());
     const portfolio = user.portfolio;
     let position = portfolio.getAssetByInstrumentId(order.getInstrumentId())?.quantity || 0;

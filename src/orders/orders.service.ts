@@ -97,16 +97,32 @@ export class OrdersService {
     const orders = await this.getUserOrders(userId, OrderStatus.FILLED);
     const portfolio: { [ticker: string]: IAsset } = {};
     let availableCash = 0;
-    let totalAccountValue = 0;
-    // Process each order and build the portfolio
-    const promises = orders.map(async (order) => {
+    //let totalAccountValue = 0;
+
+    // Process cash transactions first
+    const cashOrders = orders.filter((order) => order.side === OrderSide.CASH_IN || order.side === OrderSide.CASH_OUT);
+
+    cashOrders.forEach((cashOrder) => {
+      if (cashOrder.side === OrderSide.CASH_IN) {
+        availableCash += Number(cashOrder.size);
+      } else if (cashOrder.side === OrderSide.CASH_OUT) {
+        availableCash -= Number(cashOrder.size);
+      }
+    });
+    // Process trading orders
+    const tradeOrders = orders.filter((order) => order.side === OrderSide.BUY || order.side === OrderSide.SELL);
+
+    const promises = tradeOrders.map(async (order) => {
+      const ticker = order.instruments.ticker;
       const instrumentId = order.instrumentid;
       const marketData = await this.marketDataService.getByInstrumentId(instrumentId);
+
       if (!marketData) return;
-      const ticker = order.instruments.ticker;
-      const orderValue = Number(order.price) * order.size;
+
       const currentPrice = Number(marketData.close);
       const previousClosePrice = Number(marketData.previousclose);
+
+      // Initialize portfolio entry if not exists
       if (!portfolio[ticker]) {
         portfolio[ticker] = {
           instrumentId: instrumentId,
@@ -120,32 +136,50 @@ export class OrdersService {
           closePrice: previousClosePrice,
         };
       }
-      // Update portfolio quantity and average price
+
+      // Update portfolio for BUY orders
       if (order.side === OrderSide.BUY) {
-        const totalQuantity = portfolio[ticker].quantity + order.size;
-        const totalInvestment = portfolio[ticker].avgPrice * portfolio[ticker].quantity + orderValue;
-        portfolio[ticker].quantity = totalQuantity;
-        portfolio[ticker].avgPrice = totalInvestment / totalQuantity;
+        const orderValue = Number(order.price) * order.size;
+        const currentQuantity = portfolio[ticker].quantity;
+        const currentAvgPrice = portfolio[ticker].avgPrice;
+
+        const newTotalQuantity = currentQuantity + order.size;
+        const newTotalInvestment = currentQuantity * currentAvgPrice + order.size * Number(order.price);
+
+        portfolio[ticker].quantity = newTotalQuantity;
+        portfolio[ticker].avgPrice = newTotalInvestment / newTotalQuantity;
+
+        // Deduct cash for purchase
         availableCash -= orderValue;
-      } else if (order.side === OrderSide.SELL) {
+      }
+      // Update portfolio for SELL orders
+      else if (order.side === OrderSide.SELL) {
+        const orderValue = Number(order.price) * order.size;
+
         portfolio[ticker].quantity -= order.size;
+
+        // Add cash from sale
         availableCash += orderValue;
       }
-      // Calculate total value and performance
+
+      // Recalculate total value and performance
       portfolio[ticker].totalValue = portfolio[ticker].quantity * currentPrice;
-      portfolio[ticker].totalPerfomance = this.calculatePerformance(currentPrice, portfolio[ticker].avgPrice);
+      portfolio[ticker].totalPerfomance = this.calculatePerformance(currentPrice, portfolio[ticker].avgPrice, previousClosePrice);
     });
     await Promise.all(promises);
-    // Calculate total account value including available cash
-    totalAccountValue = availableCash + Object.values(portfolio).reduce((acc, asset) => acc + asset.totalValue, 0);
-    // Convert portfolio object to array
-    const assets = Object.values(portfolio);
+    // Calculate total account value
+    const totalAccountValue = availableCash + Object.values(portfolio).reduce((acc, asset) => acc + asset.totalValue, 0);
 
+    // Filter out assets with zero quantity
+    const assets = Object.values(portfolio).filter((asset) => asset.quantity > 0);
     return new Portfolio(totalAccountValue, availableCash, assets);
   }
 
-  private calculatePerformance(currentPrice: number, avgPrice: number): number {
+  private calculatePerformance(currentPrice: number, avgPrice: number, previousClosePrice: number): number {
     if (avgPrice === 0) return 0;
-    return ((currentPrice - avgPrice) / avgPrice) * 100;
+
+    const overallPerformance = ((currentPrice - avgPrice) / avgPrice) * 100;
+
+    return parseFloat(overallPerformance.toFixed(2));
   }
 }

@@ -1,28 +1,106 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+### **Colección Postman: Trading API**
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+#### **1\. Crear Orden**
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- **Método**: `POST`
+- **URL**: `http://localhost:3000/orders`
+- **Descripción**: Crea una nueva orden de compra o venta de un instrumento financiero.
+- **Headers**:
+  - `Content-Type`: `application/json`
 
-## Description
+```json
+{
+  "userId": 1,
+  "instrumentId": 2,
+  "side": "SELL",
+  "size": 399,
+  "type": "MARKET"
+}
+```
+
+- **Respuesta esperada**:
+  - Código de estado: `200 OK` (ejemplo).
+  - Respuesta: Dependerá de la implementación del servidor.
+
+---
+
+#### **2\. Consultar Portafolio**
+
+- **Método**: `GET`
+- **URL**: `http://localhost:3000/portfolio/1`
+- **Descripción**: Obtiene información detallada del portafolio del usuario con ID `1`.
+- **Headers**:
+  - (No requiere headers adicionales).
+
+```json
+{
+  "totalAccountValue": 1966411,
+  "availableCash": 1691034,
+  "assets": [
+    {
+      "instrumentId": 47,
+      "ticker": "PAMP",
+      "name": "Pampa Holding S.A.",
+      "quantity": 80,
+      "totalValue": 74068,
+      "totalPerfomance": -0.45,
+      "avgPrice": 930,
+      "lastPrice": 925.85,
+      "closePrice": 921.8
+    },
+    {
+      "instrumentId": 2,
+      "ticker": "CAPX",
+      "name": "Capex S.A.",
+      "quantity": 1,
+      "totalValue": 1865,
+      "totalPerfomance": -101.01,
+      "avgPrice": -184635,
+      "lastPrice": 1865,
+      "closePrice": 1918
+    },
+    {
+      "instrumentId": 54,
+      "ticker": "METR",
+      "name": "MetroGAS S.A.",
+      "quantity": 1000,
+      "totalValue": 229500,
+      "totalPerfomance": -8.2,
+      "avgPrice": 250,
+      "lastPrice": 229.5,
+      "closePrice": 232
+    }
+  ]
+}
+```
+
+#### **3\. Buscar Instrumentos**
+
+- **Método**: `GET`
+- **URL**: `http://localhost:3000/instruments/search`
+- **Descripción**: Busca instrumentos financieros por nombre y ticker con soporte para paginación.
+- **Parámetros de consulta**:
+  - `name` (opcional): Nombre del instrumento. Ejemplo: `Ferrum`.
+  - `ticker` (opcional): Ticker del instrumento. Ejemplo: `Fe`.
+  - `take` (opcional): Número de resultados a retornar. Ejemplo: `10`.
+  - `skip` (opcional): Número de resultados a omitir para paginación. Ejemplo: `0`.
+- **Headers**:
+  - (No requiere headers adicionales).
+- vbnetCopy code[http://localhost:3000/instruments/search?name=Ferrum&amp;ticker=Fe&amp;take=10&amp;skip=0](http://localhost:3000/instruments/search?name=Ferrum&ticker=Fe&take=10&skip=0)
+
+```json
+{
+  "userId": 1,
+  "instrumentId": 2,
+  "side": "SELL",
+  "size": 399,
+  "type": "MARKET"
+}
+```
+
+---
+
+## FrameWork
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
@@ -83,16 +161,6 @@ Check out a few resources that may come in handy when working with NestJS:
 - Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
 - To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
 - Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 

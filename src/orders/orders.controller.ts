@@ -1,6 +1,7 @@
-import { Body, ClassSerializerInterceptor, Controller, Post, SerializeOptions, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, HttpException, HttpStatus, Post, SerializeOptions, UseFilters, UseInterceptors } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
+import { GenericExceptionFilter } from 'src/common/filters/order.exception.filter';
 
 @Controller('orders')
 export class OrdersController {
@@ -8,7 +9,12 @@ export class OrdersController {
 
   @Post()
   @UseInterceptors(ClassSerializerInterceptor)
+  @UseFilters(GenericExceptionFilter)
   async createOrder(@Body() createOrderDto: CreateOrderDto) {
-    return await this.ordersService.createOrder(createOrderDto);
+    try {
+      return await this.ordersService.createOrder(createOrderDto);
+    } catch (error) {
+      throw error;
+    }
   }
 }

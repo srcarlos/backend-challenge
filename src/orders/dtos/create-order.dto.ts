@@ -1,4 +1,4 @@
-import { IsInt, IsString, IsNumber, IsEnum } from 'class-validator';
+import { IsInt, IsString, IsNumber, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderSide, OrderType } from '../types/order.types';
 
@@ -22,6 +22,7 @@ export class CreateOrderDto {
   @IsEnum(OrderType)
   type: OrderType;
 
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   price?: number; // Optional for MARKET orders

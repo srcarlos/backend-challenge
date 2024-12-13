@@ -12,8 +12,8 @@ export class MarketOrderProcessor implements OrderProcessor {
   async validate(order: Order, user: User): Promise<boolean> {
     const latestPrice = await this.marketDataService.getLatestPrice(order.getInstrumentId());
     const portfolio = user.portfolio;
-    let position = portfolio.getAssetByInstrumentId(order.getInstrumentId()).quantity;
-    let availableCash = user.portfolio.availableCash;
+    let position = portfolio.getAssetByInstrumentId(order.getInstrumentId())?.quantity || 0;
+    let availableCash = user.portfolio.availableCash || 0;
 
     if (order.getSide() === OrderSide.BUY) {
       const totalCost = latestPrice * order.getSize();

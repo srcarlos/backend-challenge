@@ -88,7 +88,7 @@ export class Order {
       side: this.side,
       size: this.size,
       type: this.type,
-      price: new Prisma.Decimal(this.price),
+      price: new Prisma.Decimal(this.price || 0),
       status: this.status,
       datetime: this.datetime,
     };

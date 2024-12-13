@@ -6,13 +6,15 @@ import { MarketOrderProcessor } from './orderProcessor/strategy/market.orderProc
 import { LimitOrderProcessor } from './orderProcessor/strategy/limit.orderProcessor';
 import { CashOutOrderProcessor } from './orderProcessor/strategy/cashOut.orderProcessor';
 import { CashInOrderProcessor } from './orderProcessor/strategy/cashIn.orderProcessor';
-import { PortfolioService } from 'src/portfolio/portfolio.service';
-import { MarketdataModule } from 'src/marketdata/marketdata.module';
-import { UsersModule } from 'src/users/users.module';
+import { PortfolioService } from '../portfolio/portfolio.service';
+import { MarketdataModule } from '../marketdata/marketdata.module';
+import { UsersModule } from '../users/users.module';
+import { PrismaService } from '../prisma/prisma.service';
+import { PrismaModule } from '../prisma/prisma.module';
 //
 @Module({
-  imports: [MarketdataModule, UsersModule],
-  providers: [OrdersService, OrdersRepository, MarketOrderProcessor, LimitOrderProcessor, CashInOrderProcessor, CashOutOrderProcessor, PortfolioService],
+  imports: [MarketdataModule, UsersModule, PrismaModule],
+  providers: [OrdersService, PrismaService, OrdersRepository, MarketOrderProcessor, LimitOrderProcessor, CashInOrderProcessor, CashOutOrderProcessor, PortfolioService],
   exports: [OrdersService],
   controllers: [OrdersController],
 })

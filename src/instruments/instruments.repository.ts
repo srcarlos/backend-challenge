@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, instruments as Instruments } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { FindInstrumentsQueryDto } from './dtos/find-instruments-query.dto';
 
 @Injectable()
@@ -43,10 +43,7 @@ export class InstrumentsRepository {
     return this.prismaService.instruments.delete({ where: { id } });
   }
 
-  private buildConditions(params: {
-    name?: string;
-    ticker?: string;
-  }): Prisma.instrumentsWhereInput[] {
+  private buildConditions(params: { name?: string; ticker?: string }): Prisma.instrumentsWhereInput[] {
     const conditions: Prisma.instrumentsWhereInput[] = [];
 
     if (params.name) {

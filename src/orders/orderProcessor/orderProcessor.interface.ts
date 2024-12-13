@@ -1,4 +1,4 @@
-import { User } from 'src/users/user.entity';
+import { User } from '../../users/user.entity';
 import { Order } from '../order.entity';
 
 export interface OrderProcessor {

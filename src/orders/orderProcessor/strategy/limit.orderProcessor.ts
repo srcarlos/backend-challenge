@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OrderProcessor } from '../orderProcessor.interface';
-import { Order } from 'src/orders/order.entity';
-import { OrderStatus } from 'src/orders/types/order.types';
-import { User } from 'src/users/user.entity';
-import { OrdersRepository } from 'src/orders/orders.repository';
-import { plainToClass } from 'class-transformer';
-import { CreateOrderDto } from 'src/orders/dtos/create-order.dto';
+import { Order } from '../../../orders/order.entity';
+import { OrderStatus } from '../../../orders/types/order.types';
+import { User } from '../../../users/user.entity';
+import { OrdersRepository } from '../../../orders/orders.repository';
 
 @Injectable()
 export class LimitOrderProcessor implements OrderProcessor {

@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Order } from 'src/orders/order.entity';
-import { User } from 'src/users/user.entity';
+import { Order } from '../../../orders/order.entity';
+import { User } from '../../../users/user.entity';
 import { OrderProcessor } from '../orderProcessor.interface';
-import { MarketdataService } from 'src/marketdata/marketdata.service';
-import { OrderStatus } from 'src/orders/types/order.types';
+import { MarketdataService } from '../../../marketdata/marketdata.service';
+import { OrderStatus } from '../../../orders/types/order.types';
+import { OrdersRepository } from '../../../orders/orders.repository';
 
 @Injectable()
 export class CashOutOrderProcessor implements OrderProcessor {
-  constructor(private readonly marketDataService: MarketdataService) {}
+  constructor(
+    private readonly marketDataService: MarketdataService,
+    private readonly ordersRepository: OrdersRepository,
+  ) {}
 
   async validate(order: Order, user: User): Promise<boolean> {
     const latestPrice = await this.marketDataService.getLatestPrice(order.getInstrumentId());
@@ -26,9 +30,8 @@ export class CashOutOrderProcessor implements OrderProcessor {
 
     availableCash -= order.getSize();
     order.setStatus(OrderStatus.FILLED);
-
-    //await this.ordersRepository.save(order); POSITION
-    //await this.ordersRepository.save(order); NEW ORDER
+    order.setPrice(latestPrice);
+    await this.ordersRepository.create(order.toOrderDto());
     return order;
   }
 }

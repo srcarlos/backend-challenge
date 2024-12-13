@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, marketdata as MarketData } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class MarketDataRepository {
@@ -10,13 +10,7 @@ export class MarketDataRepository {
     return this.prismaService.marketdata.findUnique({ where: { id } });
   }
 
-  async findMany(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.marketdataWhereUniqueInput;
-    where?: Prisma.marketdataWhereInput;
-    orderBy?: Prisma.marketdataOrderByWithRelationInput;
-  }) {
+  async findMany(params: { skip?: number; take?: number; cursor?: Prisma.marketdataWhereUniqueInput; where?: Prisma.marketdataWhereInput; orderBy?: Prisma.marketdataOrderByWithRelationInput }) {
     const { skip, take, cursor, where, orderBy } = params;
 
     return this.prismaService.marketdata.findMany({
@@ -43,13 +37,7 @@ export class MarketDataRepository {
     return this.prismaService.marketdata.delete({ where: { id } });
   }
 
-  async findOne(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.marketdataWhereUniqueInput;
-    where?: Prisma.marketdataWhereInput;
-    orderBy?: Prisma.marketdataOrderByWithRelationInput;
-  }) {
+  async findOne(params: { skip?: number; take?: number; cursor?: Prisma.marketdataWhereUniqueInput; where?: Prisma.marketdataWhereInput; orderBy?: Prisma.marketdataOrderByWithRelationInput }) {
     const { skip, take, cursor, where, orderBy } = params;
 
     return this.prismaService.marketdata.findFirst({

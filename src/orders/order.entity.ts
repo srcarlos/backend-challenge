@@ -1,5 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/library';
-import { CreateOrderDto } from './dtos/create-order.dto';
 import { IOrder } from './order.interface';
 import { OrderSide, OrderStatus, OrderType } from './types/order.types';
 import { Prisma } from '@prisma/client';

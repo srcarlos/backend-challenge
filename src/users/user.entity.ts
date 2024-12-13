@@ -1,5 +1,4 @@
-import { IPortfolio } from 'src/portfolio/interfaces/portfolio.interface';
-import { Portfolio } from 'src/portfolio/portfolio.entity';
+import { Portfolio } from '../portfolio/portfolio.entity';
 
 export class User {
   private _id: number;

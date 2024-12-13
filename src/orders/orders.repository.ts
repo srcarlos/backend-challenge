@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, orders as Orders } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class OrdersRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findMany(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.ordersWhereUniqueInput;
-    where?: Prisma.ordersWhereInput;
-    orderBy?: Prisma.ordersOrderByWithRelationInput;
-  }) {
+  async findMany(params: { skip?: number; take?: number; cursor?: Prisma.ordersWhereUniqueInput; where?: Prisma.ordersWhereInput; orderBy?: Prisma.ordersOrderByWithRelationInput }) {
     const { skip, take, cursor, where, orderBy } = params;
 
     return this.prismaService.orders.findMany({

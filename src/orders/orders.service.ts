@@ -1,22 +1,20 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { OrdersRepository } from './orders.repository';
 import { Prisma } from '@prisma/client';
-import { PortfolioService } from 'src/portfolio/portfolio.service';
-import { MarketdataService } from 'src/marketdata/marketdata.service';
+import { MarketdataService } from '../marketdata/marketdata.service';
 import { OrderSide, OrderStatus, OrderType } from './types/order.types';
 import { Order } from './order.entity';
 import { OrderProcessor } from './orderProcessor/orderProcessor.interface';
 import { MarketOrderProcessor } from './orderProcessor/strategy/market.orderProcessor';
 import { LimitOrderProcessor } from './orderProcessor/strategy/limit.orderProcessor';
 import { CashOutOrderProcessor } from './orderProcessor/strategy/cashOut.orderProcessor';
-import { User } from 'src/users/user.entity';
-import { UsersService } from 'src/users/users.service';
+import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { IOrder } from './order.interface';
 import { CashInOrderProcessor } from './orderProcessor/strategy/cashIn.orderProcessor';
-import { IPortfolio } from 'src/portfolio/interfaces/portfolio.interface';
-import { IAsset } from 'src/portfolio/interfaces/asset.interface';
-import { Portfolio } from 'src/portfolio/portfolio.entity';
+import { IAsset } from '../portfolio/interfaces/asset.interface';
+import { Portfolio } from '../portfolio/portfolio.entity';
 
 @Injectable()
 export class OrdersService {

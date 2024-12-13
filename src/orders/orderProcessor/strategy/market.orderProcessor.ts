@@ -1,11 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Order } from 'src/orders/order.entity';
-import { User } from 'src/users/user.entity';
+import { Order } from '../../../orders/order.entity';
+import { User } from '../../../users/user.entity';
 import { OrderProcessor } from '../orderProcessor.interface';
-import { MarketdataService } from 'src/marketdata/marketdata.service';
-import { OrderSide, OrderStatus } from 'src/orders/types/order.types';
-import { IOrder } from 'src/orders/order.interface';
-import { OrdersRepository } from 'src/orders/orders.repository';
+import { MarketdataService } from '../../../marketdata/marketdata.service';
+import { OrderSide, OrderStatus } from '../../..//orders/types/order.types';
+import { OrdersRepository } from '../../../orders/orders.repository';
 
 @Injectable()
 export class MarketOrderProcessor implements OrderProcessor {
@@ -47,18 +46,22 @@ export class MarketOrderProcessor implements OrderProcessor {
     const portfolio = user.portfolio;
     let position = portfolio.getAssetByInstrumentId(order.getInstrumentId())?.quantity || 0;
     let availableCash = user.portfolio.availableCash || 0;
-
+    let transactionOrder: Order;
+    transactionOrder = new Order(JSON.parse(JSON.stringify(order)));
     if (order.getSide() === OrderSide.BUY) {
       availableCash -= latestPrice * order.getSize();
       position = position + order.getSize();
+      transactionOrder.setSide(OrderSide.CASH_OUT);
     } else if (order.getSide() === OrderSide.SELL) {
       position -= order.getSize();
       availableCash += latestPrice * order.getSize();
+      transactionOrder.setSide(OrderSide.CASH_IN);
     }
     order.setPrice(latestPrice);
     order.setStatus(OrderStatus.FILLED);
-
+    transactionOrder.setPrice(latestPrice);
     await this.ordersRepository.create(order.toOrderDto());
+    await this.ordersRepository.create(transactionOrder.toOrderDto());
     return order;
   }
 }

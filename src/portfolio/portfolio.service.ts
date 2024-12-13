@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IPortfolio } from './interfaces/portfolio.interface';
-import { OrdersService } from 'src/orders/orders.service';
-import { MarketdataService } from 'src/marketdata/marketdata.service';
-import { OrderSide, OrderStatus } from 'src/orders/types/order.types';
-import { IAsset } from './interfaces/asset.interface';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class PortfolioService {

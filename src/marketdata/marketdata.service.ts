@@ -11,4 +11,9 @@ export class MarketdataService {
       orderBy: { date: 'desc' },
     });
   }
+
+  async getLatestPrice(instrumentId: number): Promise<number> {
+    const instrument = await this.getByInstrumentId(instrumentId);
+    return Number(instrument.close);
+  }
 }

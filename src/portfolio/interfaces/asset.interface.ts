@@ -1,6 +1,11 @@
 export interface IAsset {
-    id: number;
-    name: string;
-    quantity: number;
-    value: number;
-  }
+  instrumentId: number;
+  ticker: string;
+  name: string;
+  quantity: number;
+  lastPrice: number;
+  closePrice: number;
+  totalValue: number;
+  avgPrice: number;
+  totalPerfomance: number;
+}

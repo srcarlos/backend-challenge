@@ -4,7 +4,6 @@ import { MarketDataRepository } from './marketdata.repository';
 
 @Module({
   providers: [MarketdataService, MarketDataRepository],
-
-  exports: [MarketdataService, MarketDataRepository],
+  exports: [MarketdataService],
 })
 export class MarketdataModule {}
